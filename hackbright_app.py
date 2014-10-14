@@ -31,17 +31,39 @@ def make_new_student(first_name, last_name, github):
     print "Successfully added student: %s %s" % (first_name, last_name)
 
 def make_new_project(title, description, max_grade):
+    print title, description, max_grade
     query = """INSERT INTO Projects (title, description, max_grade) VALUES (?, ?, ?)"""
     DB.execute(query, (title, description, max_grade))
     CONN.commit()
     print "Successfully added project: %s" % (title)
+
+def make_arguments(input_string):
+    new_list = []
+    word = ""
+    inquotes = False
+    for char in input_string + " ":
+        if char == '"' and inquotes == False:
+            inquotes = True
+        elif inquotes == True and char == '"':
+            new_list.append(word)
+            print "the appended word:", word
+            word = ""
+            inquotes = False
+        elif char == " " and inquotes == False:
+            if word:
+                new_list.append(word)
+            word = ""
+        else:
+            word += char
+
+    return new_list
 
 def main():
     connect_to_db()
     command = None
     while command != "quit":
         input_string = raw_input("HBA Database> ")
-        tokens = input_string.split(',')
+        tokens = make_arguments(input_string)
         command = tokens[0]
         args = tokens[1:]
 
