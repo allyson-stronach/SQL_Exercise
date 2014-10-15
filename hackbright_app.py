@@ -7,9 +7,7 @@ def get_student_by_github(github):
     query = """SELECT first_name, last_name, github FROM Students WHERE github = ?"""
     DB.execute(query, (github,))
     row = DB.fetchone()
-    print """\
-Student: %s %s
-Github account: %s"""%(row[0], row[1], row[2])
+    return row
 
 def get_project_by_title(title):
     query = """SELECT title, description FROM Projects WHERE title = ?"""
@@ -18,6 +16,15 @@ def get_project_by_title(title):
     print """\
 Title: %s
 Description: %s"""%(row[0], row[1])
+
+def get_grade_by_project(first_name, last_name, project):
+    query = """SELECT first_name, last_name, title, grade FROM ReportCardView WHERE first_name = ? AND last_name = ? AND title = ?"""
+    DB.execute(query, (first_name, last_name, project))
+    row = DB.fetchone()
+    print """\
+Student Name: %s %s
+Project: %s
+Grade: %d"""%(row[0],row[1],row[2], row[3])
 
 def connect_to_db():
     global DB, CONN
@@ -75,6 +82,8 @@ def main():
             get_project_by_title(*args)
         elif command == "new_project":
             make_new_project(*args)
+        elif command == "grade":
+            get_grade_by_project(*args)
 
     CONN.close()
 
