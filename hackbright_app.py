@@ -26,6 +26,12 @@ Student Name: %s %s
 Project: %s
 Grade: %d"""%(row[0],row[1],row[2], row[3])
 
+def get_grades_by_github(github):
+    query = """SELECT project_title, grade FROM Grades WHERE student_github = ?"""
+    DB.execute(query, (github,))
+    row_of_projects_and_grades = DB.fetchall()
+    return row_of_projects_and_grades
+
 def connect_to_db():
     global DB, CONN
     CONN = sqlite3.connect("hackbright.db")
